@@ -3,12 +3,26 @@ const Task = require('../models/Task');
 // 🔥 Buat Task Baru
 const createTask = async (req, res) => {
     try {
-        const { title, description } = req.body;
-        const task = new Task({ title, description, user: req.user.id });
-        await task.save();
+        const { title, description, status } = req.body;
+        
+        console.log("Request body:", req.body);
+        console.log("User ID:", req.user?._id); // Cek apakah user terdeteksi dari JWT
+
+        if (!title || !description) {
+            return res.status(400).json({ message: 'Title and description are required' });
+        }
+
+        const task = await Task.create({
+            title,
+            description,
+            status: status || 'pending',
+            user: req.user._id, 
+        });
+
         res.status(201).json(task);
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error("Error saat menambahkan task:", error); // Tambahkan log ini
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
 

@@ -6,6 +6,10 @@ const cors = require("cors");
 const app = express();
 connectDB();
 
+app.get('/', (req,res) => {
+  res.send ('API is running')
+})
+
 app.use(express.json());
 app.use(cors());
 

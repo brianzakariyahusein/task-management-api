@@ -35,26 +35,27 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Cek user berdasarkan email
+    // Cek user ada atau tidak
     const user = await User.findOne({ email });
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     // Cek password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Buat token
+    // Buat token JWT
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "1d",
     });
 
-    res.status(200).json({ token, user });
+    res.json({ token });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error(error); // 🔥 Cek error detail
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
