@@ -2,7 +2,7 @@ import React from "react";
 
 function Header() {
   return (
-    <header style={StyleSheet.header}>
+    <header style={styles.header}>
       <h1>Task Managment APP</h1>
     </header>
   );
